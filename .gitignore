@@ -18,3 +18,5 @@ __pycache__/
 **.terraform/
 **.terraform.lock*
 **terraform.tfstate*
+
+mlopszooomcamp-f24a34ad2ff1.json
