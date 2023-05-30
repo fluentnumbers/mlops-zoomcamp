@@ -30,7 +30,7 @@ REPO_DIR = ${PWD}
 #######################################################################
 
 test:
-	echo ${KAGGLE_USERNAME}
+	echo ${TF_VAR_project}
 
 vm_install_anaconda:
 	cd /home/$(USER);\
@@ -46,6 +46,13 @@ vm_install_anaconda:
 # 	# RESTAAAAAAAAAAAAAAAAAAAAART
 # 	# sudo service docker restart
 
+vm_install_terraform:
+	cd /home/$(USER);\
+	mkdir bin;\
+	cd bin;\
+	wget https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_amd64.zip;\
+	unzip -o terraform_1.3.9_linux_amd64.zip;\
+	rm terraform_1.3.9_linux_amd64.zip
 
 # vm_install_docker_compose:
 # 	sudo apt-get update -y
@@ -68,6 +75,21 @@ vm_setup:
 	sudo apt-get install unzip;\
 	sudo apt-get install wget;\
 	cd $(REPO_DIR);\
+	$(MAKE) vm_install_terraform;\
 	gcloud auth activate-service-account --key-file ${GOOGLE_APPLICATION_CREDENTIALS};\
 
 
+#############################################
+################# TERRAFORM
+##############################################
+terraform_setup:
+	@echo "Initialiaze GCP infrastructure"
+	cd terraform; \
+	terraform init; \
+	terraform plan; \
+	terraform apply --auto-approve;
+
+
+#############################################
+################# PREFECT
+##############################################

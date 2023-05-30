@@ -44,7 +44,7 @@ def train_and_log_model(data_path, params):
 @click.command()
 @click.option(
     "--data_path",
-    default="./output",
+    default="./data/output",
     help="Location where the processed NYC taxi trip data was saved"
 )
 @click.option(
@@ -70,10 +70,16 @@ def run_register_model(data_path: str, top_n: int):
 
     # Select the model with the lowest test RMSE
     experiment = client.get_experiment_by_name(EXPERIMENT_NAME)
-    # best_run = client.search_runs( ...  )[0]
+    best_run = client.search_runs(
+        experiment_ids=experiment.experiment_id,
+        filter_string='',
+        max_results=1,
+        order_by=["metrics.rmse ASC"]
+    )[0]
 
     # Register the best model
-    # mlflow.register_model( ... )
+    model_uri = f"runs:/{best_run.info.run_id}/model"
+    mlflow.register_model(model_uri=model_uri, name="lowest_rmse")
 
 
 if __name__ == '__main__':
